@@ -1,0 +1,26 @@
+service: hello-sls-framework
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  hello:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /
+          method: get
+  hello2:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /hello
+          method: get
+  hello3:
+    handler: index.handler
+    events:
+      - httpApi:
+          path: /hello2
+          method: get
