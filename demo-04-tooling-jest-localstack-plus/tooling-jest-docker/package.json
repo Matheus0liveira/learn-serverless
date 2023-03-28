@@ -1,0 +1,18 @@
+{
+  "name": "tooling-jest-docker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx nodemon --exec yarn offline",
+    "offline": "npx sls offline start --host 0.0.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "2"
+  },
+  "devDependencies": {
+    "nodemon": "2",
+    "serverless": "3",
+    "serverless-offline": "^12.0.4"
+  }
+}
