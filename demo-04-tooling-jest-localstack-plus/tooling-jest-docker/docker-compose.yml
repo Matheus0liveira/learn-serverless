@@ -21,7 +21,22 @@ services:
     depends_on:
       - localstack
     environment:
-      - LOCALSTACK_HOST=localstack
-      
+      LOCALSTACK_HOST: localstack
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+  test:
+    build: .
+    command: yarn test:watch
+    volumes:
+      - .:/src
+      - nodemodules:/src/node_modules
+    restart: on-failure
+    depends_on:
+      - localstack
+    environment:
+      LOCALSTACK_HOST: localstack
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+
 volumes: 
   nodemodules: {}
