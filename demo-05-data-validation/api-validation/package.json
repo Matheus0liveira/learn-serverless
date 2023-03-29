@@ -1,0 +1,17 @@
+{
+  "name": "api-validation",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "invoke-local": "IS_OFFLINE=true sls invoke local -f hero-insert --path mocks/heroes.insert.json"
+  },
+  "dependencies": {
+    "@hapi/joi": "17.1"
+  },
+  
+  "devDependencies": {
+    "aws-sdk": "2"
+  }
+
+}
