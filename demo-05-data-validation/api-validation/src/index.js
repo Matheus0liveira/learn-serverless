@@ -4,8 +4,8 @@ const { decoratorValidator } = require("./util");
 
 const handler = new Handler({ dynamoDbSvc: dynamoDB });
 
-const herosTriggers = async ({ body }) => {
-  console.log("event ---", event);
+const heroesTrigger = async (event) => {
+  console.log("event ---", JSON.stringify(event, null, 2));
   return {
     statusCode: 200,
     body: JSON.stringify(
@@ -19,13 +19,13 @@ const herosTriggers = async ({ body }) => {
   };
 };
 
-const herosInsert = decoratorValidator(
+const heroesInsert = decoratorValidator(
   handler.main.bind(handler),
   Handler.validator(),
   "body"
 );
 
 module.exports = {
-  herosTriggers,
-  herosInsert,
+  heroesTrigger,
+  heroesInsert,
 };

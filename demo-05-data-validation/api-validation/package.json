@@ -4,14 +4,18 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "invoke-local": "IS_OFFLINE=true sls invoke local -f hero-insert --path mocks/heroes.insert.json"
+    "invoke-local": "IS_OFFLINE=true sls invoke local -f hero-insert --path mocks/heroes.insert.json",
+    "invoke-local-trigger": "sls invoke -f hero-trigger --path mocks/heroes.trigger.json",
+    "invoke": "sls invoke -f hero-insert --path mocks/heroes.insert.json",
+    "log-trigger": "sls logs -f hero-trigger"
   },
   "dependencies": {
-    "@hapi/joi": "17.1"
+    "@hapi/joi": "17.1",
+    "aws-sdk": "2"
   },
   
   "devDependencies": {
-    "aws-sdk": "2"
+   
   }
 
 }
