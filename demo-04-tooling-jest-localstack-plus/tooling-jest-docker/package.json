@@ -5,12 +5,15 @@
   "license": "MIT",
   "scripts": {
     "start": "npx nodemon --exec yarn offline",
-    "offline": "npx sls offline start --host 0.0.0.0"
+    "offline": "npx sls offline start --host 0.0.0.0",
+    "test": "IS_OFFLINE=true npx jest --collect-coverage",
+    "test:watch": "IS_OFFLINE=true npx jest --watchAll"
   },
   "dependencies": {
     "aws-sdk": "2"
   },
   "devDependencies": {
+    "jest": "28",
     "nodemon": "2",
     "serverless": "3",
     "serverless-offline": "^12.0.4"
