@@ -1,10 +1,50 @@
 service: multienv
-frameworkVersion: '3'
+frameworkVersion: "3"
 
 provider:
   name: aws
   runtime: nodejs18.x
+  region: "us-east-1"
+  stage: ${opt:stage, 'qa'}
+  environment: ${file(./configs/env.${self:provider.stage}.json)}
+  iam:
+    role:
+      statements: ${file(./configs/serverless/db.iam.role.yml)}
+
+custom:
+  schedulerRate: rate(1 minute)
+  enabled: true
+  tableName: ${self:provider.environment.DbTableName}
+  dbWriteCapacityUnits: ${self:provider.environment.DbWriteCapacityUnits}
+  dbReadCapacityUnits: ${self:provider.environment.DbReadCapacityUnits}
 
 functions:
-  function1:
-    handler: index.handler
+  scheduler:
+    handler: src/handler.scheduler
+    events:
+      - schedule:
+          rate: ${self:custom.schedulerRate}
+          name: schedule-commit-message-${self:provider.stage}
+          description: get commit messages every minute
+          enabled: ${self:custom.enabled}
+resources:
+  Resources: ${file(./configs/serverless/dynamo.commitMessages.yml)}
+#     HeroesTable:
+#       Type: AWS::DynamoDB::Table
+#       Properties:
+#         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+#         AttributeDefinitions:
+#           - AttributeName: id
+#             AttributeType: S
+#           - AttributeName: name
+#             AttributeType: S
+#         KeySchema:
+#           - AttributeName: id
+#             KeyType: HASH
+#           - AttributeName: name
+#             KeyType: RANGE
+#         ProvisionedThroughput:
+#           ReadCapacityUnits: 1
+#           WriteCapacityUnits: 1
+#         StreamSpecification:
+#           StreamViewType: NEW_AND_OLD_IMAGES

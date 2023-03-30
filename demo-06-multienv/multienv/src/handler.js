@@ -1,52 +1,36 @@
-const Joi = require("@hapi/joi");
+const { settings } = require("../configs/settings");
+const axios = require("axios");
+const cheerio = require("cheerio");
+const { dynamoDB } = require("./factory");
 const { randomUUID } = require("node:crypto");
-
 class Handler {
-  constructor({ dynamoDbSvc }) {
-    this.dynamoDbSvc = dynamoDbSvc;
-    this.dynamoTable = "Heroes";
-  }
-  static validator() {
-    return Joi.object({
-      name: Joi.string().max(100).min(2).required(),
-      power: Joi.string().max(20).min(2).required(),
-    });
-  }
-  async main({ body }) {
-    const params = this.prepareData(body);
+  static async main(event) {
+    console.log("at", new Date().toISOString(), JSON.stringify(event, null, 2));
 
-    await this.dynamoDbSvc.put(params).promise();
+    const { data } = await axios.get(settings.APICommitMessageURL);
 
-    const insertedItem = await this.insertedHero(params);
+    const $ = cheerio.load(data);
 
-    return {
-      statusCode: 200,
-      body: insertedItem,
-    };
-  }
+    const [commitMessage] = $("#content").text().trim().split("\n");
 
-  async insertedHero(params) {
-    return await this.dynamoDbSvc
-      .query({
-        TableName: this.dynamoTable,
-        ExpressionAttributeValues: {
-          ":id": params.Item.id,
-        },
-        KeyConditionExpression: "id = :id",
-      })
-      .promise();
-  }
-
-  prepareData(body) {
-    return {
-      TableName: this.dynamoTable,
+    const params = {
+      TableName: settings.DbTableName,
       Item: {
-        ...body,
+        commitMessage,
         id: randomUUID(),
         created_at: new Date().toISOString(),
       },
     };
+
+    await dynamoDB.put(params).promise();
+
+    return {
+      statusCode: 200,
+      message: commitMessage,
+    };
   }
 }
 
-module.exports = Handler;
+module.exports = {
+  scheduler: Handler.main,
+};

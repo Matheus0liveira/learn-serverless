@@ -3,10 +3,13 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "invoke-local": "IS_OFFLINE=true sls invoke local -f scheduler"
+  },
   "dependencies": {
+    "aws-sdk": "2",
     "axios": "1.2",
     "cheerio": "1.0.0-rc.12",
     "env-var": "7.3"
   }
-
 }
